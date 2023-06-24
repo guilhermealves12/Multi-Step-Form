@@ -11,6 +11,9 @@ form.addEventListener("click", (e) => {
 
   const actions = {
     next() {
+      if (!isValidInput()) {
+        return
+      }
       currentStep++
     },
     prev() {
@@ -29,6 +32,9 @@ form.addEventListener("click", (e) => {
 
 form.addEventListener("submit", (e) => {
   e.preventDefault()
+
+  const data = new FormData(form)
+  alert("Obrigado ${data.get('name')}!")
 })
 
 /* UPDATES STEPS */
@@ -53,3 +59,24 @@ function updateProgressStep() {
     }
   })
 }
+
+function isValidInput() {
+  const currentFormStep = formSteps[currentStep]
+  const formFields = [
+    ...currentFormStep.querySelectorAll("input"),
+    ...currentFormStep.querySelectorAll("textarea"),
+  ]
+
+  return formFields.every((input) => input.reportValidity())
+}
+
+formSteps.forEach((formSteps) => {
+  function addHide() {
+    formStep.classList.add("hide")
+  }
+
+  formStep.addEventListener("animationend", (e) => {
+    addHide()
+    formSteps[currentStep].classList.remove("hide")
+  })
+})
